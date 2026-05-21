@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Metricas de Errores</title>
+</head>
+<body>
+    <h1>Metrica de Errores</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nombre del Error</th>
+                <th>Fecha del Error</th>
+                <th>Cantidad de Errores</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for error in errores %}
+            <tr>
+                <td>{{ error.nombre_del_error }}</td>
+                <td>{{ error.fecha_del_error }}</td>
+                <td>{{ error.cantidad_de_errores }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No hay errores registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .product-info { max-width: 600px; }
+        .price { color: #2a9d2a; font-size: 1.5em; font-weight: bold; }
+        .meta { color: #888; }
+        .reviews { margin-top: 30px; }
+        .review { border-bottom: 1px solid #eee; padding: 10px 0; }
+        .stars { color: #f5c518; }
+        .btn { display: inline-block; padding: 8px 16px; margin: 5px; text-decoration: none; border-radius: 4px; }
+        .btn-edit { background: #007bff; color: white; }
+        .btn-delete { background: #dc3545; color: white; }
+        .btn-back { background: #6c757d; color: white; }
+        .btn-review { background: #28a745; color: white; }
+    </style>
+</head>
+<body>
+    <a href="{% url 'store:product_list' %}" class="btn btn-back">Volver al Catálogo</a>
+    <a href="{% url 'store:product_update' product.pk %}" class="btn btn-edit">Editar</a>
+    <a href="{% url 'store:product_delete' product.pk %}" class="btn btn-delete">Eliminar</a>
+
+    <div class="product-info">
+        <h1>{{ product.name }}</h1>
+        <p>Categoría: <a href="{% url 'store:category_detail' product.category.pk %}">{{ product.category.name }}</a></p>
+        <p class="price">${{ product.price }}</p>
+        <p class="meta">Stock: {{ product.stock }}</p>
+        <p>{{ product.description }}</p>
+        <p class="meta">Agregado: {{ product.created_at|date }}</p>
+    </div>
+
+    <div class="reviews">
+        <h2>Reseñas</h2>
+        <a href="{% url 'store:add_review' product.pk %}" class="btn btn-review">Escribir Reseña</a>
+        {% for review in product.reviews.all %}
+            <div class="review">
+                <strong>{{ review.author_name }}</strong>
+                <span class="stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</span>
+                <p>{{ review.comment }}</p>
+                <small class="meta">{{ review.created_at|date }}</small>
+            </div>
+        {% empty %}
+            <p>Sin reseñas aún.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Catálogo de Tienda</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .product-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+        .product-card h3 { margin-top: 0; }
+        .price { color: #2a9d2a; font-size: 1.2em; font-weight: bold; }
+        .stock { color: #888; }
+        .categories { margin-bottom: 20px; }
+        .categories a { margin-right: 10px; }
+        .pagination { margin-top: 20px; }
+        nav a { margin-right: 10px; }
+        .flash { background: #d4edda; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'store:product_list' %}">Inicio</a>
+        <a href="{% url 'store:product_create' %}">Agregar Producto</a>
+    </nav>
+
+    <h1>Catálogo de Productos</h1>
+
+    <div class="categories">
+        <strong>Categorías:</strong>
+        <a href="{% url 'store:product_list' %}">Todas</a>
+        {% for cat in categories %}
+            <a href="{% url 'store:category_detail' cat.pk %}">{{ cat.name }}</a>
+        {% endfor %}
+    </div>
+
+    <form method="get" action="{% url 'store:product_list' %}">
+        {{ search_form.query }}
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <h3><a href="{% url 'store:product_detail' product.pk %}">{{ product.name }}</a></h3>
+                <p>{{ product.description|truncatewords:20 }}</p>
+                <p class="price">${{ product.price }}</p>
+                <p class="stock">Stock: {{ product.stock }}</p>
+                <a href="{% url 'store:product_update' product.pk %}">Editar</a> |
+                <a href="{% url 'store:product_delete' product.pk %}">Eliminar</a>
+            </div>
+        {% empty %}
+            <p>No hay productos disponibles.</p>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+        {% endif %}
+        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>
